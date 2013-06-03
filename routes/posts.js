@@ -8,7 +8,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
 
   var utils = require('../lib/utils');
 
-  var PHOTO_WIDTH = 400;
+  var PHOTO_WIDTH = 500;
   var upload = null;
 
   var escapeHtml = function (text) {
@@ -18,7 +18,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
       .replace(/>/g, '&gt;');
   };
 
-  app.get('/recent', function (req, res) {
+  app.get('/posts/recent', function (req, res) {
     meat.shareRecent(req.query.start || 0, function (err, posts) {
       res.json({
         posts: posts,
@@ -62,7 +62,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
     });
   });
 
-  app.get('/all', function (req, res, next) {
+  app.get('/posts/all', function (req, res, next) {
     var pagination = utils.setPagination(req, meat);
 
     if (utils.isEditor(req)) {
@@ -98,7 +98,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
     }
   });
 
-  app.get('/add', isAdmin, function (req, res) {
+  app.get('/posts/add', isAdmin, function (req, res) {
     res.render('add', {
       url: null,
       isAdmin: true,
@@ -128,7 +128,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
     });
   });
 
-  app.post('/share', isAdmin, function (req, res, next) {
+  app.post('/posts/share', isAdmin, function (req, res, next) {
     request.get({ url: req.body.url, json: true }, function (err, resp, body) {
       if (err) {
         res.status(404);
@@ -219,7 +219,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
     }
   };
 
-  app.post('/add', isAdmin, function (req, res, next) {
+  app.post('/posts/add', isAdmin, function (req, res, next) {
     var message = {
       content: {
         message: escapeHtml(req.body.message),

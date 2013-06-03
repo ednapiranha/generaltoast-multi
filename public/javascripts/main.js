@@ -56,7 +56,7 @@ define(['jquery', 'meat'],
         url: '/persona/logout',
         type: 'POST',
         success: function(res, status, xhr) {
-          $.get('/logout', function () {
+          $.get('/user/logout', function () {
             localStorage.removeItem('personaEmail');
             document.location.href = '/';
           });

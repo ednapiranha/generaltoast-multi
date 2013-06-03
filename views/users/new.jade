@@ -1,0 +1,14 @@
+extend ../layout
+
+block content
+  .container
+    .form
+      h1 Create an account
+
+      if error
+        p.error= error
+
+      form(method='post', action='/user/new')
+        input(type='text', name='full_name', placeholder='Full name', value='#{fullName}')
+        input(type='text', name='username', placeholder='Username', value='#{username}')
+        button(type='submit') Create

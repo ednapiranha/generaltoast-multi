@@ -26,10 +26,10 @@ html
     #header
       a(href='/', title='Home') /
       if session.isAdmin
-        a(href='/add', title='Add new', class='sub') +
+        a(href='/posts/add', title='Add new', class='sub') +
         a(href='/subscription/manage', title='Manage subscriptions') s
       else
-        a(href='/recent', title='Get this subscription url', class='sub mini') Subscribe
+        a(href='/posts/recent', title='Get this subscription url', class='sub mini') Subscribe
 
     script(src='https://login.persona.org/include.js', type='text/javascript')
     if isDebug
