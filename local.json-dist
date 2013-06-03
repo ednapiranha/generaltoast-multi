@@ -5,8 +5,6 @@
     "authUrl": "https://login.persona.org",
     "session_secret": "secret",
     "session_cookie": "session",
-    "full_name": "your name",
-    "url": "your url",
     "db": 1,
     "debug": true,
     "s3_key": "your s3 key",

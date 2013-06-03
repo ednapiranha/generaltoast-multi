@@ -6,9 +6,10 @@ module.exports = function (app, meat, nconf, isAdmin) {
   app.get('/', function (req, res) {
     var isAdmin = false;
 
-    if (utils.isEditor(req)) {
+    if (req.session.email) {
       isAdmin = true;
       req.session.isAdmin = true;
+      meat.keyId = ':' + req.session.email;
     }
 
     var pagination = utils.setPagination(req, meat);
