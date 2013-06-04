@@ -247,7 +247,7 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
           res.status(400);
           next(err);
         } else {
-          var filename = 'post_' + (new Date().getTime().toString()) + '.' +
+          var filename = 'post_' + req.session.userId + (new Date().getTime().toString()) + '.' +
             req.files.photo.name.split('.').pop();
           var s3 = knox.createClient({
             key: nconf.get('s3_key'),
