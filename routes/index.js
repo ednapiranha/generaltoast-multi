@@ -11,7 +11,7 @@ module.exports = function (app, meat, nconf, client, isAdmin, hasNoAccount) {
       client.get('userEmail:' + username, function (err, email) {
         users.push({
           username: username,
-          avatar: gravatar.url(email, { size: 300 })
+          avatar: gravatar.url(email, { size: 290 })
         });
 
         if (users.length === usernames.length) {
