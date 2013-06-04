@@ -11,7 +11,7 @@ html
     else
       link(rel='stylesheet', href='/stylesheets/main-min.css')
 
-  body(data-url='#{url}', data-authenticated='#{session.isAdmin || false}', data-page='#{page}')
+  body(data-username='#{username}', data-url='#{url}', data-authenticated='#{session.isAdmin || false}', data-page='#{page}')
     #wrapper
       .content
         block content
@@ -19,17 +19,18 @@ html
         .footer-inner
           a(href='https://npmjs.org/package/meatspace') Meatspace
           a(href='https://github.com/ednapiranha/generaltoast') Fork this repo
-          if session.isAdmin
+          if session.email
             a(href='javascript:;', data-action='logout') Log out
           else
             a(href='javascript:;', data-action='login') Admin login
     #header
       a(href='/', title='Home') /
-      if session.isAdmin
+      if session.email
         a(href='/posts/add', title='Add new', class='sub') +
         a(href='/subscription/manage', title='Manage subscriptions') s
-      else
-        a(href='/posts/recent', title='Get this subscription url', class='sub mini') Subscribe
+
+      if username && (!session.email || (session.email && session.username !== username))
+        a(href='/#{username}/recent', title='Get this subscription url', class='sub mini') Subscribe
 
     script(src='https://login.persona.org/include.js', type='text/javascript')
     if isDebug

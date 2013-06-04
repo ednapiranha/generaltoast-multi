@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (app, meat, nconf, isAdmin) {
+module.exports = function (app, meat, nconf, client, isAdmin) {
   var request = require('request');
   var knox = require('knox');
   var MultiPartUpload = require('knox-mpu');
@@ -18,12 +18,65 @@ module.exports = function (app, meat, nconf, isAdmin) {
       .replace(/>/g, '&gt;');
   };
 
-  app.get('/posts/recent', function (req, res) {
-    meat.shareRecent(req.query.start || 0, function (err, posts) {
-      res.json({
-        posts: posts,
-        total: meat.totalPublic
+  app.get('/:username/recent', function (req, res) {
+    client.get('usernameId:' + req.params.username, function (err, id) {
+      if (err || !id) {
+        res.status(404);
+        next();
+      } else {
+        meat.keyId = ':' + id;
+        meat.shareRecent(req.query.start || 0, function (err, posts) {
+          res.json({
+            posts: posts,
+            total: meat.totalPublic
+          });
+        });
+      }
+    });
+  });
+
+  app.get('/:username', function (req, res, next) {
+    var renderPosts = function (posts) {
+      var pagination = utils.setPagination(req, meat);
+
+      res.format({
+        html: function () {
+          res.render('users/home', {
+            url: '/' + req.params.username,
+            page: 'index',
+            prev: pagination.prev,
+            next: pagination.next,
+            username: req.params.username
+          });
+        },
+        json: function () {
+          res.send({
+            posts: posts,
+            total: meat.totalPublic,
+            prev: pagination.prev,
+            next: pagination.next
+          });
+        }
       });
+    };
+
+    client.get('usernameId:' + req.params.username, function (err, id) {
+      if (err || !id) {
+        res.status(404);
+        next();
+      } else {
+        meat.keyId = ':' + id;
+
+        if (req.session.username && req.session.username === req.params.username) {
+          meat.getAll(req.query.start || 0, function (err, posts) {
+            renderPosts(posts);
+          });
+        } else {
+          meat.shareRecent(req.query.start || 0, function (err, posts) {
+            renderPosts(posts);
+          });
+        }
+      }
     });
   });
 
@@ -46,7 +99,8 @@ module.exports = function (app, meat, nconf, isAdmin) {
               url: '/post/' + req.params.id,
               page: 'post',
               prev: false,
-              next: false
+              next: false,
+              username: ''
             });
           },
           json: function () {
@@ -123,7 +177,8 @@ module.exports = function (app, meat, nconf, isAdmin) {
         isAdmin: true,
         page: 'edit',
         start: 0,
-        total: 0
+        total: 0,
+        username: ''
       });
     });
   });
@@ -164,7 +219,8 @@ module.exports = function (app, meat, nconf, isAdmin) {
 
     meat.create(message, function (err, post) {
       if (err) {
-        callback(err);
+        res.status(500);
+        next(err);
       } else {
         message.meta.originUrl = nconf.get('domain') + ':' + nconf.get('authPort') +
           '/post/' + post.id;
@@ -173,7 +229,7 @@ module.exports = function (app, meat, nconf, isAdmin) {
             res.status(400);
             next(err);
           } else {
-            res.redirect('/');
+            res.redirect('/' + req.session.username);
           }
         });
       }
@@ -220,6 +276,10 @@ module.exports = function (app, meat, nconf, isAdmin) {
   };
 
   app.post('/posts/add', isAdmin, function (req, res, next) {
+    meat.keyId = ':' + req.session.userId;
+    meat.fullName = req.session.fullName;
+    meat.postUrl = req.session.postUrl;
+
     var message = {
       content: {
         message: escapeHtml(req.body.message),

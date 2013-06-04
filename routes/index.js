@@ -2,33 +2,57 @@
 
 module.exports = function (app, meat, nconf, client, isAdmin, hasNoAccount) {
   var utils = require('../lib/utils');
+  var gravatar = require('gravatar');
 
   app.get('/', function (req, res, next) {
-    var isAdmin = false;
+    var users = [];
 
-    var renderIndex = function () {
-      var pagination = utils.setPagination(req, meat);
+    var getAvatars = function (username, usernames) {
+      client.get('userEmail:' + username, function (err, email) {
+        users.push({
+          username: username,
+          avatar: gravatar.url(email, { size: 300 })
+        });
 
-      res.render('index', {
-        url: '/',
-        isAdmin: isAdmin,
-        page: 'index',
-        prev: pagination.prev,
-        next: pagination.next
+        if (users.length === usernames.length) {
+          res.render('index', {
+            url: '/',
+            users: users,
+            page: 'landing',
+            username: ''
+          });
+        }
       });
     };
 
-    if (req.session.email) {
-      isAdmin = true;
-      req.session.isAdmin = true;
+    var renderIndex = function () {
+      client.send_command('SRANDMEMBER', ['usernames', '12'], function (err, usernames) {
+        if (err) {
+          res.status(500);
+          next();
+        } else {
+          if (usernames.length > 0) {
+            for (var i = 0; i < usernames.length; i ++) {
+              getAvatars(usernames[i], usernames);
+            }
+          } else {
+            res.render('index', {
+              url: '/',
+              users: [],
+              page: 'landing',
+              username: ''
+            });
+          }
+        }
+      });
+    };
 
+    if (req.session.email && !req.session.username) {
       client.hgetall('user:' + req.session.email, function (err, user) {
         if (err || !user) {
           // New user signup
           res.redirect('/user/new');
         } else {
-          // Set the key id to the user's email
-          meat.keyId = ':' + req.session.userId;
           renderIndex();
         }
       });
@@ -46,10 +70,13 @@ module.exports = function (app, meat, nconf, client, isAdmin, hasNoAccount) {
   });
 
   app.post('/user/new', hasNoAccount, function (req, res, next) {
-    var username = req.body.username.toString()
+    var username = req.body.username
+                           .toString()
                            .replace(/[^A-Z0-9\-_]+/gi, '')
                            .toLowerCase().trim();
-    var fullName = req.body.full_name.toString().trim();
+    var fullName = req.body.full_name
+                           .toString()
+                           .trim();
 
     var renderPage = function (message) {
       res.render('users/new', {
@@ -82,14 +109,13 @@ module.exports = function (app, meat, nconf, client, isAdmin, hasNoAccount) {
               };
 
               req.session.userId = id;
-              req.session.username = username;
               req.session.fullName = fullName;
-
-              meat.keyId = ':' + id;
-              meat.fullName = fullName;
-              meat.postUrl = 'http://generalgoods.net/' + username;
+              req.session.username = username;
+              req.session.postUrl = 'http://generalgoods.net/' + req.session.username;
 
               client.hmset('user:' + req.session.email, user);
+              client.set('usernameId:' + user.username, user.id);
+              client.set('userEmail:' + user.username, req.session.email);
               res.redirect('/');
             }
           });

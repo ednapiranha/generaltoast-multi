@@ -66,7 +66,8 @@ module.exports = function (app, meat, nconf, isAdmin) {
           url: null,
           isAdmin: true,
           subscriptions: subscriptions,
-          page: 'subscriptions'
+          page: 'subscriptions',
+          username: ''
         });
       }
     });

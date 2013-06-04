@@ -192,6 +192,10 @@ article p:empty {
     width: 135%;
 }
 
+body[data-page="landing"] .links img {
+    width: 100%;
+}
+
 .links .link {
     bottom: 25px;
     font-size: 16px;

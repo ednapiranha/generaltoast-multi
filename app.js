@@ -10,10 +10,22 @@ var client = redis.createClient();
 
 nconf.argv().env().file({ file: 'local.json' });
 
+/* Initialize meat */
+
+var meat = new Meatspace({
+  fullName: 'anonymous',
+  postUrl: nconf.get('domain') + ':' + nconf.get('authPort'),
+  db: nconf.get('db'),
+  limit: 12
+});
+
 /* Filters for routes */
 
 var isAdmin = function (req, res, next) {
   if (req.session.email) {
+    meat.fullName = req.session.fullName;
+    meat.postUrl = 'http://generalgoods.net/' + req.session.username;
+    meat.keyId = ':' + req.session.userId;
     next();
   } else {
     res.redirect('/logout');
@@ -28,22 +40,13 @@ var hasNoAccount = function (req, res, next) {
   }
 };
 
-/* Initialize meat */
-
-var meat = new Meatspace({
-  fullName: 'anonymous',
-  postUrl: nconf.get('domain') + ':' + nconf.get('authPort'),
-  db: nconf.get('db'),
-  limit: 12
-});
-
 require('express-persona')(app, {
   audience: nconf.get('domain') + ':' + nconf.get('authPort')
 });
 
 // routes
 require('./routes')(app, meat, nconf, client, isAdmin, hasNoAccount);
-require('./routes/posts')(app, meat, nconf, isAdmin);
+require('./routes/posts')(app, meat, nconf, client, isAdmin);
 require('./routes/subscriptions')(app, meat, nconf, isAdmin);
 
 app.listen(process.env.PORT || nconf.get('port'));

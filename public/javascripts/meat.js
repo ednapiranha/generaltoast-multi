@@ -79,11 +79,14 @@ define(['jquery'],
       }
     }
 
-    $.getJSON('/all', {
-      start: start
+    var username = body.data('username');
+
+    $.getJSON('/posts/all', {
+      start: start,
+      username: username
     }, function (data) {
       if (data.posts) {
-        history.pushState(data.posts, 'posts', '/?start=' + start);
+        history.pushState(data.posts, 'posts', '/' + body.data('username') + '?start=' + start);
         body.find('.messages').empty();
 
         for (var i = 0; i < data.posts.length; i ++) {
@@ -93,7 +96,7 @@ define(['jquery'],
         var next = body.find('.pagination .next');
 
         if (data.next !== false) {
-          next.attr('href', '/all?start=' + data.next)
+          next.attr('href', '/' + username + '?start=' + data.next)
               .removeClass('hidden');
         } else {
           next.addClass('hidden');
@@ -102,7 +105,7 @@ define(['jquery'],
         var prev = body.find('.pagination .prev');
 
         if (data.prev !== false) {
-          prev.attr('href', '/all?start=' + data.prev)
+          prev.attr('href', '/' + username + '?start=' + data.prev)
               .removeClass('hidden');
         } else {
           prev.addClass('hidden');

@@ -4,15 +4,11 @@ block content
   .container
     .inner-container
       .content-container
-        h1 Recent
+        h1 General Goods
+        p A pod of microness.
         .messages
-        if page === 'index'
-          .pagination
-            a(href='/?start=#{prev}', class='prev hidden', data-action='pagination', data-prev='#{prev}', data-next='#{next}') &#8592;
-            a(href='/?start=#{next}', class='next hidden', data-action='pagination', data-prev='#{prev}', data-next='#{next}') &#8594;
-
-  .container.last
-    .inner-container
-      .content-container
-        h2 Subscriptions
-        .subscriptions
+          for user in users
+            article.article
+              ul.links
+                a(class='image', href='/#{user.username}')
+                  img(src='#{user.avatar}')

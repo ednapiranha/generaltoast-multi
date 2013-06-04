@@ -17,7 +17,7 @@ define(['jquery', 'meat'],
           body.attr('data-page', 'post');
         }
         meat.getOne(body);
-      } else if (url.indexOf('/recent') > -1 || url === '/') {
+      } else if (url.indexOf('/posts/recent') > -1 || url.match(/\/[A-Z0-9\-_]+/gi)) {
         body.find('.container.last').removeClass('hidden');
         meat.getAll();
       } else {
