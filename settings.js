@@ -35,10 +35,13 @@ module.exports = function(app, configurations, express) {
     app.use(app.router);
     app.use(function(req, res, next) {
       res.status(404);
-      res.render('404', {
-        url: req.url,
-        layout: false,
-        page: 'error'
+      res.format({
+        html: function () {
+          next();
+        },
+        json: function () {
+          res.send({ message: 'not found' });
+        }
       });
       return;
     });

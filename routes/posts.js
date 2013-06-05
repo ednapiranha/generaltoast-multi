@@ -88,56 +88,38 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
       } else {
         meat.keyId = ':' + id;
         meat.getAllIds(function (err, ids) {
-          if (err) {
-            res.status(400);
-            next(err);
+          if (err || ids.indexOf(req.params.id) === -1) {
+            res.status(404);
+            next();
           } else {
-            if (ids.indexOf(req.params.id) === -1) {
-              res.status(404);
-              res.format({
-                html: function () {
-                  next();
-                },
-                json: function () {
-                  res.send({ message: 'not found' });
-                }
-              });
-            } else {
-              meat.get(req.params.id, function (err, post) {
-                if (err || (!req.session.email && post.meta.isPrivate)) {
-                  res.status(404);
-                  res.format({
-                    html: function () {
-                      next();
-                    },
-                    json: function () {
-                      res.send({ message: 'not found' });
-                    }
-                  });
-                } else {
-                  res.format({
-                    html: function () {
-                      res.render('index', {
-                        url: '/post/' + req.params.username + '/' + req.params.id,
-                        users: [],
-                        page: 'post',
-                        prev: false,
-                        next: false,
-                        username: req.params.username
-                      });
-                    },
-                    json: function () {
-                      res.send({
-                        post: post,
-                        isAdmin: utils.isEditor(req),
-                        prev: false,
-                        next: false
-                      });
-                    }
-                  });
-                }
-              });
-            }
+            meat.get(req.params.id, function (err, post) {
+              if (err || (!req.session.email && post.meta.isPrivate)) {
+                res.status(400);
+                next(err);
+              } else {
+                res.format({
+                  html: function () {
+                    res.render('index', {
+                      url: '/post/' + req.params.username + '/' + req.params.id,
+                      users: [],
+                      page: 'post',
+                      prev: false,
+                      next: false,
+                      isAdmin: utils.isEditor(req),
+                      username: req.params.username
+                    });
+                  },
+                  json: function () {
+                    res.send({
+                      post: post,
+                      isAdmin: utils.isEditor(req),
+                      prev: false,
+                      next: false
+                    });
+                  }
+                });
+              }
+            });
           }
         });
       }
@@ -178,6 +160,10 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
         }
       });
     }
+  });
+
+  app.get('/:username/:id', function (req, res) {
+    res.redirect('/post/' + req.params.username +'/' + req.params.id);
   });
 
   app.get('/posts/add', isAdmin, function (req, res) {
@@ -348,7 +334,7 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
           res.status(400);
           res.json({ message: err.toString() });
         } else {
-          res.redirect('/post/' + post.id);
+          res.redirect('/post/' + req.session.username + '/' + post.id);
         }
       });
     });

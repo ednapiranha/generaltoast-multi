@@ -20,7 +20,7 @@ html
           a(href='/') Home
           a(href='https://npmjs.org/package/meatspace') Meatspace
           if session.email
-            a(href='javascript:;', data-action='logout') Sign out
+            a(href='javascript:;', data-action='logout') Sign out as #{session.username}
           else
             a(href='javascript:;', data-action='login') Sign in with Persona
     #header

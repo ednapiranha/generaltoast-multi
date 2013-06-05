@@ -154,7 +154,7 @@ define(['jquery'],
               body.find('.subscriptions').empty();
 
               for (var i = 0; i < data.posts.length; i ++) {
-                body.find('.subscriptions').append(generatePost(data.posts[i], false, true));
+                body.find('.subscriptions').append(generatePost(data.posts[i], data.isAdmin, true));
               }
             }
           });
