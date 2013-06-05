@@ -19,14 +19,15 @@ html
         .footer-inner
           a(href='https://npmjs.org/package/meatspace') Meatspace
           if session.email
-            a(href='javascript:;', data-action='logout') Log out
+            a(href='javascript:;', data-action='logout') Sign out
           else
             a(href='javascript:;', data-action='login') Sign in with Persona
     #header
       a(href='/', title='Home') /
-      if session.email
+      if session.email && session.username
+        a(href='/#{session.username}', title='You!') U
         a(href='/posts/add', title='Add new', class='sub') +
-        a(href='/subscription/manage', title='Manage subscriptions') s
+        a(href='/subscription/manage', title='Manage subscriptions') S
 
       if username && (!session.email || (session.email && session.username !== username))
         a(href='/#{username}/recent', title='Get this subscription url', class='sub mini') Subscribe

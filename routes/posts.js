@@ -97,6 +97,7 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
           html: function () {
             res.render('index', {
               url: '/post/' + req.params.id,
+              users: [],
               page: 'post',
               prev: false,
               next: false,

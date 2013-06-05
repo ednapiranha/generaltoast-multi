@@ -53,8 +53,8 @@ html, body {
 }
 
 @font-face {
-    font-family: 'BebasNeueRegular';
-    src: url('../fonts/BebasNeue-webfont.woff') format('woff');
+    font-family: 'OstrichSansBold';
+    src: url('../fonts/ostrich-bold-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -62,6 +62,12 @@ html, body {
 a {
     color: #555;
     text-decoration: none;
+}
+
+p.micro {
+    color: #77e7ff;
+    font-family: Arial, sans-serif;
+    padding-bottom: 10px;
 }
 
 #header {
@@ -75,18 +81,19 @@ a {
     background-color: #59d5bc;
     color: #fff;
     float: left;
-    font-family: 'BebasNeueRegular', Arial, sans-serif;
-    font-size: 25px;
-    line-height: 35px;
+    font-family: 'OstrichSansBold', Arial, sans-serif;
+    font-size: 35px;
+    height: 35px;
     margin-right: 5px;
     outline: none;
-    padding: 5px 10px;
+    padding: 8px 10px 3px;
     text-align: center;
     width: 30px;
 }
 
 #header a.sub {
-    font-size: 45px;
+    font-size: 55px;
+    line-height: 40px;
 }
 
 #header a.mini {
@@ -122,7 +129,7 @@ a {
 }
 
 .content {
-    font-family: 'BebasNeueRegular', Arial, sans-serif;
+    font-family: 'OstrichSansBold', Arial, sans-serif;
     letter-spacing: 0.01rem;
 }
 
@@ -215,9 +222,10 @@ body[data-page="landing"] .content-container {
 
 body[data-page="post"] .messages article {
     height: auto;
+    margin-bottom: 20px;
     min-height: 240px;
     padding-bottom: 45px;
-    width: 400px;
+    width: 500px;
 }
 
 body[data-page="post"] .messages .links:not(:empty) {
@@ -265,7 +273,7 @@ button {
     border-radius: 5px;
     color: #fff;
     cursor: pointer;
-    font-family: 'BebasNeueRegular', Arial, sans-serif;
+    font-family: 'OstrichSansBold', Arial, sans-serif;
     font-size: 22px;
     line-height: 22px;
     margin: 5px 0;
@@ -326,10 +334,10 @@ ul.subscriptions .actions a, .actions a {
     color: #fff;
     display: inline-block;
     margin: 0 2px;
-    padding: 5px 3px;
-    font-family: 'BebasNeueRegular', Arial, sans-serif;
+    padding: 6px 3px 3px;
+    font-family: 'OstrichSansBold', Arial, sans-serif;
     font-size: 22px;
-    line-height: 20px;
+    height: 20px;
     text-align: center;
     text-shadow: #39739c -1px -1px 0;
     width: 25px;
@@ -357,9 +365,13 @@ ul.subscriptions .actions a:hover, .actions a:hover {
 #footer a {
     color: #aaa;
     display: inline-block;
-    font-family: 'BebasNeueRegular', Arial, sans-serif;
-    font-size: 20px;
+    font-family: 'OstrichSansBold', Arial, sans-serif;
+    font-size: 22px;
     margin-right: 18px;
+}
+
+#footer a:hover {
+    color: #77e7ff;
 }
 
 .pagination {
@@ -412,6 +424,10 @@ ul.subscriptions .actions a:hover, .actions a:hover {
         width: 320px;
     }
 
+    p.micro {
+        padding-bottom: 0;
+    }
+
     .content-container {
         padding: 0 10px;
     }
@@ -423,11 +439,6 @@ ul.subscriptions .actions a:hover, .actions a:hover {
     form {
         margin-top: 10px;
         width: 340px;
-    }
-
-    h1, h2 {
-        text-align: left;
-        margin-left: 5px;
     }
 
     h1 {
