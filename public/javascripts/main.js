@@ -69,9 +69,11 @@ define(['jquery', 'meat'],
   });
 
   window.onpopstate = function (ev) {
-    body.attr('data-url', document.location.pathname)
-        .attr('data-page', 'index');
-    checkUrl();
+    if (ev.state) {
+      body.attr('data-url', document.location.pathname)
+          .attr('data-page', 'index');
+      checkUrl();
+    }
   }
 
   window.onpushstate = function (ev) {
