@@ -23,11 +23,12 @@ html
           else
             a(href='javascript:;', data-action='login') Sign in with Persona
     #header
-      a(href='/', title='Home') /
       if session.email && session.username
-        a(href='/#{session.username}', title='You!') U
+        a(href='/#{session.username}', title='You!') /
         a(href='/posts/add', title='Add new', class='sub') +
         a(href='/subscription/manage', title='Manage subscriptions') S
+      else
+        a(href='/', title='Home') /
 
       if username && (!session.email || (session.email && session.username !== username))
         a(href='/#{username}/recent', target='_blank', title='Get this subscription url', class='sub mini') Subscribe
