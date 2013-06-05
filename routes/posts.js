@@ -18,7 +18,7 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
       .replace(/>/g, '&gt;');
   };
 
-  app.get('/:username/recent', function (req, res) {
+  app.get('/:username/recent', function (req, res, next) {
     client.get('usernameId:' + req.params.username, function (err, id) {
       if (err || !id) {
         res.status(404);
