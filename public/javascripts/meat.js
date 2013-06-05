@@ -53,8 +53,8 @@ define(['jquery'],
       }
     } else {
       permalink = '<a href="javascript:;" ' +
-        'data-action="get-post" data-url="/post/' + post.id + '" ' +
-        'class="permalink" title="Permalink">P</a>';
+        'data-action="get-post" data-url="/post/' + body.data('username') + '/' +
+        post.id + '" ' + 'class="permalink" title="Permalink">P</a>';
     }
 
     if (post.meta.isShared || isSubscription) {
@@ -122,7 +122,7 @@ define(['jquery'],
       getRecent();
       body.find('h1').text('Recent');
 
-      $.getJSON('/subscription/all', function (data) {
+      $.getJSON('/subscription/' + body.data('username') +'/all', function (data) {
         if (data.posts) {
           body.find('.subscriptions').empty();
 
@@ -140,12 +140,24 @@ define(['jquery'],
     getOne: function (self) {
       $.getJSON(self.data('url'), function (data) {
         if (data.post) {
-          history.pushState(data.post, 'post ' + data.post.id, '/post/' + data.post.id);
+          history.pushState(data.post, 'post ' + data.post.id, '/post/' + body.data('username') + '/' + data.post.id);
           body.find('h1').text('Post');
           body.attr('data-page', 'post')
-              .attr('data-url', '/post/' + data.post.id);
+              .attr('data-url', '/post/' + body.data('username') + '/' + data.post.id);
           body.find('.messages').html(generatePost(data.post, data.isAdmin, false));
           body.find('.pagination a').addClass('hidden');
+        }
+
+        if (body.find('.subscriptions article').length < 1) {
+          $.getJSON('/subscription/' + body.data('username') + '/all', function (data) {
+            if (data.posts) {
+              body.find('.subscriptions').empty();
+
+              for (var i = 0; i < data.posts.length; i ++) {
+                body.find('.subscriptions').append(generatePost(data.posts[i], false, true));
+              }
+            }
+          });
         }
       });
     },

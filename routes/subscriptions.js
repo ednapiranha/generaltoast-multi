@@ -1,41 +1,55 @@
 'use strict';
 
-module.exports = function (app, meat, nconf, isAdmin) {
+module.exports = function (app, meat, nconf, client, isAdmin) {
   var request = require('request');
 
   var SUBSCRIPTION_MAX = 12;
 
-  app.get('/subscription/all', function (req, res) {
-    meat.getSubscriptions(function (err, subscriptions) {
-      if (err) {
-        res.status(400);
-        next(err);
+  app.get('/subscription/:username/all', function (req, res, next) {
+    client.get('usernameId:' + req.params.username, function (err, id) {
+      if (err || !id) {
+        res.status(404);
+        next();
       } else {
-        var posts;
-        var count = 0;
+        meat.keyId = ':' + id;
+        meat.getSubscriptions(function (err, subscriptions) {
+          if (err) {
+            res.status(400);
+            next(err);
+          } else {
+            var posts;
+            var count = 0;
 
-        subscriptions.forEach(function (currSubscription) {
-          meat.getSubscriptionRecent(currSubscription, function (err, pArr) {
-            count ++;
-            if (!err) {
-              if (!posts) {
-                posts = pArr;
-              } else {
-                posts = posts.concat(pArr);
-              }
+            subscriptions.forEach(function (currSubscription) {
+              meat.getSubscriptionRecent(currSubscription, function (err, pArr) {
+                count ++;
+                if (!err) {
+                  if (!posts) {
+                    posts = pArr;
+                  } else {
+                    posts = posts.concat(pArr);
+                  }
 
-              if (posts.length > SUBSCRIPTION_MAX) {
-                posts.splice(SUBSCRIPTION_MAX, posts.length - SUBSCRIPTION_MAX);
-              }
-            }
+                  if (posts.length > SUBSCRIPTION_MAX) {
+                    posts.splice(SUBSCRIPTION_MAX, posts.length - SUBSCRIPTION_MAX);
+                  }
+                }
 
-            if (count === subscriptions.length) {
-              posts = posts.sort(function (a, b) {
-                return parseInt(b.content.created, 10) - parseInt(a.content.created, 10);
+                if (count === subscriptions.length) {
+                  if (posts) {
+                    if (posts.length > 1) {
+                      posts = posts.sort(function (a, b) {
+                        return parseInt(b.content.created, 10) - parseInt(a.content.created, 10);
+                      });
+                    }
+                  } else {
+                    posts = [];
+                  }
+                  res.json({ posts: posts });
+                }
               });
-              res.json({ posts: posts });
-            }
-          });
+            });
+          }
         });
       }
     });

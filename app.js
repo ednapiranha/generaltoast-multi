@@ -47,6 +47,6 @@ require('express-persona')(app, {
 // routes
 require('./routes')(app, meat, nconf, client, isAdmin, hasNoAccount);
 require('./routes/posts')(app, meat, nconf, client, isAdmin);
-require('./routes/subscriptions')(app, meat, nconf, isAdmin);
+require('./routes/subscriptions')(app, meat, nconf, client, isAdmin);
 
 app.listen(process.env.PORT || nconf.get('port'));

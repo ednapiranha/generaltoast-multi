@@ -12,3 +12,9 @@ block content
               ul.links
                 a(class='image', href='/#{user.username}')
                   img(src='#{user.avatar}')
+  if page === 'post'
+    .container.last
+      .inner-container
+        .content-container
+          h2 Subscriptions
+          .subscriptions

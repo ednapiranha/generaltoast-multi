@@ -80,37 +80,64 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
     });
   });
 
-  app.get('/post/:id', function (req, res, next) {
-    meat.get(req.params.id, function (err, post) {
-      if (err || (!req.session.email && post.meta.isPrivate)) {
+  app.get('/post/:username/:id', function (req, res, next) {
+    client.get('usernameId:' + req.params.username, function (err, id) {
+      if (err || !id) {
         res.status(404);
-        res.format({
-          html: function () {
-            next();
-          },
-          json: function () {
-            res.send({ message: 'not found' });
-          }
-        });
+        next();
       } else {
-        res.format({
-          html: function () {
-            res.render('index', {
-              url: '/post/' + req.params.id,
-              users: [],
-              page: 'post',
-              prev: false,
-              next: false,
-              username: ''
-            });
-          },
-          json: function () {
-            res.send({
-              post: post,
-              isAdmin: utils.isEditor(req),
-              prev: false,
-              next: false
-            });
+        meat.keyId = ':' + id;
+        meat.getAllIds(function (err, ids) {
+          if (err) {
+            res.status(400);
+            next(err);
+          } else {
+            if (ids.indexOf(req.params.id) === -1) {
+              res.status(404);
+              res.format({
+                html: function () {
+                  next();
+                },
+                json: function () {
+                  res.send({ message: 'not found' });
+                }
+              });
+            } else {
+              meat.get(req.params.id, function (err, post) {
+                if (err || (!req.session.email && post.meta.isPrivate)) {
+                  res.status(404);
+                  res.format({
+                    html: function () {
+                      next();
+                    },
+                    json: function () {
+                      res.send({ message: 'not found' });
+                    }
+                  });
+                } else {
+                  res.format({
+                    html: function () {
+                      res.render('index', {
+                        url: '/post/' + req.params.username + '/' + req.params.id,
+                        users: [],
+                        page: 'post',
+                        prev: false,
+                        next: false,
+                        username: req.params.username
+                      });
+                    },
+                    json: function () {
+                      res.send({
+                        post: post,
+                        isAdmin: utils.isEditor(req),
+                        prev: false,
+                        next: false
+                      });
+                    }
+                  });
+                }
+              });
+            }
           }
         });
       }
