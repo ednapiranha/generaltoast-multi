@@ -14,6 +14,7 @@ nconf.argv().env().file({ file: 'local.json' });
 
 var meat = new Meatspace({
   fullName: 'anonymous',
+  username: 'anonymous',
   postUrl: nconf.get('domain') + ':' + nconf.get('authPort'),
   db: nconf.get('db'),
   limit: 12
@@ -24,6 +25,7 @@ var meat = new Meatspace({
 var isAdmin = function (req, res, next) {
   if (req.session.email) {
     meat.fullName = req.session.fullName;
+    meat.username = req.session.username;
     meat.postUrl = 'http://generalgoods.net/' + req.session.username;
     meat.keyId = ':' + req.session.userId;
     next();

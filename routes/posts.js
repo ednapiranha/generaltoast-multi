@@ -94,8 +94,8 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
           } else {
             meat.get(req.params.id, function (err, post) {
               if (err || (!req.session.email && post.meta.isPrivate)) {
-                res.status(400);
-                next(err);
+                res.status(404);
+                next();
               } else {
                 res.format({
                   html: function () {
@@ -160,10 +160,6 @@ module.exports = function (app, meat, nconf, client, isAdmin) {
         }
       });
     }
-  });
-
-  app.get('/:username/:id', function (req, res) {
-    res.redirect('/post/' + req.params.username +'/' + req.params.id);
   });
 
   app.get('/posts/add', isAdmin, function (req, res) {

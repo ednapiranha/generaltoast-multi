@@ -37,7 +37,11 @@ module.exports = function(app, configurations, express) {
       res.status(404);
       res.format({
         html: function () {
-          next();
+          res.render('404', {
+            url: req.url,
+            layout: false,
+            page: 'error'
+          });
         },
         json: function () {
           res.send({ message: 'not found' });
