@@ -1,12 +1,12 @@
 # General Toast
 
-This is a sample micro[b]log app using [meatspace](https://npmjs.org/package/meatspace).
+This is a sample micro[b]log app with multiple user support using [meatspace](https://npmjs.org/package/meatspace).
 
 ## Installation
 
 ### Clone the repository
 
-> git clone git://github.com/ednapiranha/generaltoast.git
+> git clone git://github.com/ednapiranha/generaltoast-multi.git
 
 ### Install grunt
 
@@ -15,10 +15,6 @@ This is a sample micro[b]log app using [meatspace](https://npmjs.org/package/mea
 ### Copy over json files and adjust values as needed
 
 > cp local.json-dist local.json
-
-> cp whitelist.json-dist whitelist.json
-
-whitelist.json contains emails that are allowed to manage posts.
 
 Include your Amazone S3 key, secret and bucket in local.json so that you can upload photos.
 
@@ -46,4 +42,4 @@ If you run this in dev, you don't need to do anything by default. If you run thi
 
 ## Subscribing to other meatspaces
 
-When you click on the 'S' in the top right hand corner after logging in, you can add urls to JSON feeds from other meatspace urls. For example, visiting [http://meatspace.generalgoods.net](http://meatspace.generalgoods.net) and clicking on '+' gives you the feed for that site. Add that url to your subscription and your site will pull in the latest posts.
+When you click on the 'S' in the top right hand corner after logging in, you can add urls to JSON feeds from other meatspace urls. For example, visiting [http://meatspace.generalgoods.net](http://meatspace.generalgoods.net) and clicking on 'Subscribe' gives you the feed for that site. Add that url to your subscription and your site will pull in the latest posts.
