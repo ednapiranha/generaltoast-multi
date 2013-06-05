@@ -30,7 +30,7 @@ html
         a(href='/subscription/manage', title='Manage subscriptions') S
 
       if username && (!session.email || (session.email && session.username !== username))
-        a(href='/#{username}/recent', title='Get this subscription url', class='sub mini') Subscribe
+        a(href='/#{username}/recent', target='_blank', title='Get this subscription url', class='sub mini') Subscribe
 
     script(src='https://login.persona.org/include.js', type='text/javascript')
     if isDebug

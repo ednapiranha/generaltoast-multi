@@ -82,6 +82,10 @@ define(['jquery', 'meat'],
     checkUrl();
   }
 
+  $('form').on('submit', function (ev) {
+    $(this).find('button').attr('disabled', disabled);
+  });
+
   body.on('click', function (ev) {
     var self = $(ev.target);
 
