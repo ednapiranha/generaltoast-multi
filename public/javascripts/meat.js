@@ -46,8 +46,14 @@ define(['jquery'],
         '" data-action="delete-post" title="Delete">D</a>';
     }
 
+    if (post.meta.originUrl.indexOf(document.location.origin) === 0) {
+      post.meta.originUrl = document.location.origin + '/post/' + post.username +
+        '/' + post.id;
+    }
+
     if (isSubscription) {
       if (body.data('authenticated') === true) {
+        // If this url is from us, make sure to add the username
         permalink = '<a href="javascript:;" data-action="share" data-url="' +
           post.meta.originUrl + '" title="Share">S</a>';
       }
