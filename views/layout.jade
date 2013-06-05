@@ -18,11 +18,10 @@ html
       #footer
         .footer-inner
           a(href='https://npmjs.org/package/meatspace') Meatspace
-          a(href='https://github.com/ednapiranha/generaltoast') Fork this repo
           if session.email
             a(href='javascript:;', data-action='logout') Log out
           else
-            a(href='javascript:;', data-action='login') Admin login
+            a(href='javascript:;', data-action='login') Sign in with Persona
     #header
       a(href='/', title='Home') /
       if session.email
