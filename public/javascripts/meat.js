@@ -167,7 +167,7 @@ define(['jquery'],
     },
 
     share: function (self) {
-      $.post('/share', { url: self.data('url') }, function (data) {
+      $.post('/posts/share', { url: self.data('url') }, function (data) {
         body.find('.messages').prepend(generatePost(data.post, true, false));
       });
     },
