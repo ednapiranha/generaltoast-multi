@@ -11,7 +11,7 @@ html
     else
       link(rel='stylesheet', href='/stylesheets/main-min.css')
 
-  body(data-username='#{username}', data-url='#{url}', data-authenticated='#{session.isAdmin || false}', data-page='#{page}')
+  body(data-username='#{username}', data-url='#{url}', data-authenticated='#{!!session.email || false}', data-page='#{page}')
     #wrapper
       .content
         block content
