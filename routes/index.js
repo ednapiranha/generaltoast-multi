@@ -53,6 +53,11 @@ module.exports = function (app, meat, nconf, client, isAdmin, hasNoAccount) {
           // New user signup
           res.redirect('/user/new');
         } else {
+          req.session.userId = user.id;
+          req.session.fullName = user.fullName;
+          req.session.username = user.username;
+          req.session.postUrl = 'http://generalgoods.net/' + req.session.username;
+
           renderIndex();
         }
       });
